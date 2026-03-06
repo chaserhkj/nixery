@@ -20,8 +20,9 @@ import (
 )
 
 type S3Backend struct {
-	bucket string
-	client *s3.Client
+	bucket         string
+	linkExpiration time.Duration
+	client         *s3.Client
 }
 
 // Constructs a new S3 bucket backend based on the configured
@@ -65,9 +66,20 @@ func NewS3Backend() (*S3Backend, error) {
 		o.UsePathStyle = true
 	})
 
+	linkExpires := os.Getenv("S3_LINK_EXPIRATION")
+	if linkExpires == "" {
+		linkExpires = "5m"
+	}
+
+	linkExpiration, err := time.ParseDuration(linkExpires)
+	if err != nil || linkExpiration < 0 {
+		return nil, fmt.Errorf("failed to parse link expiration: %w", err)
+	}
+
 	return &S3Backend{
-		bucket: bucket,
-		client: client,
+		bucket:         bucket,
+		linkExpiration: linkExpiration,
+		client:         client,
 	}, nil
 }
 
@@ -160,7 +172,7 @@ func (b *S3Backend) Serve(digest string, r *http.Request, w http.ResponseWriter)
 		Bucket: aws.String(b.bucket),
 		Key:    aws.String(key),
 	}, func(opts *s3.PresignOptions) {
-		opts.Expires = 5 * time.Minute
+		opts.Expires = b.linkExpiration
 	})
 
 	if err != nil {
