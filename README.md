@@ -128,8 +128,8 @@ These extra configuration variables must be set to configure storage backends:
 * `S3_BUCKET`: Name of the S3 bucket to use (**required** for `s3`)
 * `S3_ENDPOINT`: Endpoint of S3 service, use with non-AWS providers (**optional** for `s3`)
 * `AWS_REGION`: AWS region for the S3 bucket (**optional** for `s3`, if omitted, will use `us-east-1`, which will work with most non-AWS S3 providers)
-* `AWS_ACCESS_KEY_ID`: AWS access key ID (**optional** for `s3`, uses IAM roles if unset)
-* `AWS_SECRET_ACCESS_KEY`: AWS secret access key (**optional** for `s3`, uses IAM roles if unset)
+* `S3_ACCESS_KEY`: S3 access key (**optional** for `s3`, uses IAM roles if unset)
+* `S3_SECRET_KEY`: S3 secret key (**optional** for `s3`, uses IAM roles if unset)
 
 ### Background
 
